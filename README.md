@@ -1,5 +1,31 @@
 
-## C Socket programming
+# C Socket programming
+
+## Getting started
+
+```
+: gcc -o server.tsk tcp_server.c
+: gcc -o client.tsk tcp_client.c
+
+
+: ./server.tsk
+Starting server on port 8088
+Successfully created a socket file descriptor 3.
+Successfully set socket options.
+Successfully bound socket fd to address & port.
+Start listening in blocking mode.
+
+
+: ./client.tsk
+Socket successfully created.. fd: 3
+connected to the server..
+Enter the string :
+
+```
+
+## TODO
+    - implement chat
+    - `epoll`
 
 <img src="model.png"/>
 
@@ -8,10 +34,10 @@
 Pseudocode:
 
 ```c
-socket = socket(port, tcp) // gives back file descr to use for read and write
-bind(socket, 80) // bind to port 80
-listen(socket, 5) // listen to max 5 connections
-while (accept(socket))
+socket = socket(port, tcp)  // gives back file descr to use for read and write
+bind(socket, 80)            // bind to port 80
+listen(socket, 5)           // tell kernel to listen to max 5 connections
+while (accept(socket))      // blocking
 {
 
 }
@@ -33,7 +59,6 @@ while (accept(socket))
   - `param:domain` The domain argument specifies a communication domain; this selects the protocol family which will be used for communication. In our case AF_INET IPv4 Internet protocols.
   - `param:type` The socket has the indicated type, which specifies the communication semantics. Can be `SOCK_STREAM` which is sequenced, reliable, two-way, connection based byte streams (for tcp), or `SOCK_DGRAM` connectionless, unreliable messages of a fixed maximum length (for udp), or others. Can also have an extra flag `SOCK_NONBLOCK`
   - `param:protocol` normally leave as 0. Normally only a single protocol exists to support a particular socket type within a given protocol family, in which case protocol can be specified as 0.
-  -
 ```c
 // sockfd: socket descriptor, an integer (like a file-handle)
 // domain: integer, communication domain e.g.,
@@ -109,4 +134,17 @@ int new_socket= accept(
     int sockfd,                     // socket file descriptor
     struct sockaddr *addr,          // address
     socklen_t *addrlen);            //
+```
+
+- `connect`
+
+```c
+// Socket connection: Exactly same as that of server’s socket creation
+// The connect() system call connects the socket referred to by the file
+// descriptor sockfd to the address specified by addr. Server’s address
+// and port is specified in addr.
+int connect(
+    int sockfd,
+    const struct sockaddr *addr,
+    socklen_t addrlen);
 ```

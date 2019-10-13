@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        printf("Successfully created a file descriptor %D.\n",
+        printf("Successfully created a socket file descriptor %D.\n",
             server_fd);
     }
 
@@ -68,21 +68,42 @@ int main(int argc, char const *argv[])
         printf("Successfully bound socket fd to address & port.\n");
     }
 
+    printf("Start listening in blocking mode.\n");
     if (listen(server_fd, 3) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);
     }
 
-    // if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
-    //                    (socklen_t*)&addrlen))<0)
-    // {
-    //     perror("accept");
-    //     exit(EXIT_FAILURE);
-    // }
-    // valread = read( new_socket , buffer, 1024);
-    // printf("%s\n",buffer );
-    // send(new_socket , hello , strlen(hello) , 0 );
-    // printf("Hello message sent\n");
+    // This needs to spawn a new thread
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+                       (socklen_t*)&addrlen))<0)
+    {
+        perror("accept");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        printf("Connection accepted, new socket created %d\n", new_socket);
+        for (;;)
+        {
+            char response[1024];
+            bzero(response, sizeof(response));
+
+            valread = read(new_socket, buffer, 1024);
+
+            strcpy(response, buffer);
+            strcat(response, " to you too");
+            response[1023] = '\0';
+
+            printf("Client said: %s %lu \n", buffer, strlen(buffer));
+            send(new_socket, response , strlen(response) , 0 );
+            printf("Echo message sent back. \n");
+        }
+
+    }
+
+
+
     return 0;
 }
