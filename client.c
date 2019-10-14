@@ -5,8 +5,9 @@
 #include <sys/socket.h>
 
 #define MAX 1024
-// #define PORT 8088
-#define PORT 6123
+#define PORT 8088
+#define HOSTNAME "130.211.119.0"
+// #define PORT 6123
 #define SA struct sockaddr
 
 void func(int sockfd)
@@ -99,6 +100,7 @@ int main()
     // function for chat
     for (int i=0; i < 100; i++)
     {
+        printf("Req/Resp %d ", i);
         func2(sockfd);
         // func(sockfd);
     }

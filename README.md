@@ -1,6 +1,10 @@
 
 # C Socket programming
 
+## Utils
+
+- What sockets am I listening on: ```sudo netstat -tulpn | grep LISTEN```
+
 ## Getting started
 
 ```

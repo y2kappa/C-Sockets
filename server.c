@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+
+
 #define PORT 8088
 
 int main(int argc, char const *argv[])
@@ -85,7 +87,7 @@ int main(int argc, char const *argv[])
     else
     {
         printf("Connection accepted, new socket created %d\n", new_socket);
-        for (;;)
+        for (int i = 0;;)
         {
             char response[1024];
             bzero(response, sizeof(response));
@@ -96,7 +98,7 @@ int main(int argc, char const *argv[])
             strcat(response, " to you too");
             response[1023] = '\0';
 
-            printf("Client said: %s %lu \n", buffer, strlen(buffer));
+            printf("[%d] Client said: %s %lu \n", i, buffer, strlen(buffer));
             send(new_socket, response , strlen(response) , 0 );
             printf("Echo message sent back. \n");
         }
