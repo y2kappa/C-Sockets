@@ -5,6 +5,10 @@
 
 - What sockets am I listening on: ```sudo netstat -tulpn | grep LISTEN```
 
+## Latency analysis
+
+<img src="latency.png">
+
 ## Getting started
 
 ```
