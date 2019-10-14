@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <string.h>
 
+#include "utils.h"
 
 #define PORT 8088
 
@@ -32,7 +33,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        printf("Successfully created a socket file descriptor %D.\n",
+        printf("Successfully created a socket file descriptor %d.\n",
             server_fd);
     }
 
@@ -86,8 +87,10 @@ int main(int argc, char const *argv[])
     }
     else
     {
+        char time_buffer[1024];
         printf("Connection accepted, new socket created %d\n", new_socket);
-        for (int i = 0;;)
+
+        for (int i = 0;;i++)
         {
             char response[1024];
             bzero(response, sizeof(response));
@@ -98,9 +101,14 @@ int main(int argc, char const *argv[])
             strcat(response, " to you too");
             response[1023] = '\0';
 
-            printf("[%d] Client said: %s %lu \n", i, buffer, strlen(buffer));
+            current_timestamp(time_buffer, 1024);
+
+            printf("[%s] Req#%d Client Said: %s \n",
+                time_buffer,
+                i,
+                buffer);
+
             send(new_socket, response , strlen(response) , 0 );
-            printf("Echo message sent back. \n");
         }
 
     }

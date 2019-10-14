@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+#include "utils.h"
 
 #define MAX 1024
 #define PORT 8088
@@ -10,7 +14,7 @@
 // #define PORT 6123
 #define SA struct sockaddr
 
-void func(int sockfd)
+void func(int sockfd, char time_buffer[])
 {
     char buff[MAX];
     int n;
@@ -39,8 +43,11 @@ void func(int sockfd)
 
         // now we wait for the server's response
         bzero(buff, sizeof(buff));
+
+        timenow(time_buffer, 1024);
         read(sockfd, buff, sizeof(buff));
-        printf("From Server : %s\n", buff);
+
+        printf("[%s] From Server : %s\n", time_buffer, buff);
 
         if ((strncmp(buff, "exit", 4)) == 0)
         {
@@ -50,21 +57,26 @@ void func(int sockfd)
     }
 }
 
-void func2(int sockfd)
+void func2(int sockfd, char time_buffer[], int i)
 {
-    char buff[1024] = "hi there!";
+    char buff[1024];
+    sprintf(buff, "hi there %d", i);
 
+    // timenow(time_buffer, 1024);
+    current_timestamp(time_buffer, 1024);
     write(sockfd, buff, sizeof(buff));
 
     // now we wait for the server's response
     bzero(buff, sizeof(buff));
     read(sockfd, buff, sizeof(buff));
-    printf("From Server : %s\n", buff);
+
+    printf("[%s] Resp#%d Server Said : %s\n", time_buffer, i, buff);
 
 }
 
 int main()
 {
+
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
 
@@ -97,11 +109,12 @@ int main()
         printf("connected to the server..\n");
     }
 
-    // function for chat
+    char time_buffer[1024];
+
+
     for (int i=0; i < 100; i++)
     {
-        printf("Req/Resp %d ", i);
-        func2(sockfd);
+        func2(sockfd, time_buffer, i);
         // func(sockfd);
     }
 
