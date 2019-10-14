@@ -57,25 +57,35 @@ void func(int sockfd, char time_buffer[])
     }
 }
 
-void func2(int sockfd, char time_buffer[], int i)
+void func2(int sockfd, char time_buffer[], int i, long long * micros)
 {
     char buff[100];
     sprintf(buff, "hi there %d", i);
 
     // timenow(time_buffer, 1024);
-    current_timestamp(time_buffer, 1024);
+    current_timestamp(time_buffer, 1024, micros);
+
     write(sockfd, buff, sizeof(buff));
 
     // now we wait for the server's response
     bzero(buff, sizeof(buff));
     read(sockfd, buff, sizeof(buff));
 
-    printf("[%s] Resp#%d Server Said : %s\n", time_buffer, i, buff);
+    printf("[%s] micros=%lld Resp#%d Server Said : %s\n",
+        time_buffer,
+        *micros,
+        i,
+        buff);
 
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    int n = 100;
+    if (argc == 2)
+    {
+        n = atoi(argv[1]);
+    }
 
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
@@ -110,11 +120,12 @@ int main()
     }
 
     char time_buffer[1024];
+    long long micros = 0;
 
 
-    for (int i=0; i < 5; i++)
+    for (int i=0; i < n; i++)
     {
-        func2(sockfd, time_buffer, i);
+        func2(sockfd, time_buffer, i, &micros);
         // func(sockfd);
     }
 

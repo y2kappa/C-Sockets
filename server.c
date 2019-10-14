@@ -88,6 +88,8 @@ int main(int argc, char const *argv[])
     else
     {
         char time_buffer[1024];
+        long long micros = 0;
+
         printf("Connection accepted, new socket created %d\n", new_socket);
 
         for (int i = 0;;i++)
@@ -103,10 +105,11 @@ int main(int argc, char const *argv[])
             strcat(response, " to you too");
             response[1023] = '\0';
 
-            current_timestamp(time_buffer, 1024);
+            current_timestamp(time_buffer, 1024, &micros);
 
-            printf("[%s] Req#%d Client Said: %s \n",
+            printf("[%s] micros=%lld Req#%d Client Said: %s \n",
                 time_buffer,
+                micros,
                 i,
                 buffer);
 

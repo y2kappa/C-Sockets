@@ -35,15 +35,15 @@ ssize_t format_timeval(struct timeval *tv, char *buf, size_t sz)
   return written;
 }
 
-void current_timestamp(char buf[], unsigned int size_buffer) {
+void current_timestamp(char buf[], unsigned int size_buffer, long long * micros) {
     struct timeval te;
 
     // char buf[28];
     gettimeofday(&te, NULL); // get current time
 
-
     long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
 
+    *micros = te.tv_usec + te.tv_sec*10000000LL ;
 
     format_timeval(&te, buf, size_buffer);
 
