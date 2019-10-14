@@ -59,7 +59,7 @@ void func(int sockfd, char time_buffer[])
 
 void func2(int sockfd, char time_buffer[], int i)
 {
-    char buff[1024];
+    char buff[100];
     sprintf(buff, "hi there %d", i);
 
     // timenow(time_buffer, 1024);
@@ -112,7 +112,7 @@ int main()
     char time_buffer[1024];
 
 
-    for (int i=0; i < 100; i++)
+    for (int i=0; i < 5; i++)
     {
         func2(sockfd, time_buffer, i);
         // func(sockfd);

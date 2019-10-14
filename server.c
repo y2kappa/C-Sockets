@@ -97,6 +97,8 @@ int main(int argc, char const *argv[])
 
             valread = read(new_socket, buffer, 1024);
 
+            printf("Valread %d", valread);
+
             strcpy(response, buffer);
             strcat(response, " to you too");
             response[1023] = '\0';
