@@ -9,6 +9,23 @@
 
 <img src="latency.png">
 
+## A note on file descriptors
+
+Each running process has a file descriptor table which
+contains pointers to all open i/o streams.  When a process
+starts, three entries are created in the first three cells of
+the table.  Entry 0 points to standard input, entry 1 points
+to standard output, and entry 2 points to standard error.
+Whenever a file is opened, a new entry is created in this
+table, usually in the first available empty slot.
+
+The socket system call returns an entry into this table; i.e.
+a small integer.  This value is used for other calls which
+use this socket.  The accept system call returns another
+entry into this table.  The value returned by accept is used
+for reading and writing to that connection.
+
+
 ## Getting started
 
 ```
@@ -63,10 +80,12 @@ while (accept(socket))      // blocking
 
 ### System calls
 
-- `socket` (from linux man page) creates an endpoint for communication and returns a file descriptor that refers to that endpoint.  The file descriptor returned by a successful call will be the lowest-numbered file descriptor not currently open for the process. In our case, we pass the TCP/IP parameters to specify the type of communication this file descriptor will be used for.
-  - `param:domain` The domain argument specifies a communication domain; this selects the protocol family which will be used for communication. In our case AF_INET IPv4 Internet protocols.
-  - `param:type` The socket has the indicated type, which specifies the communication semantics. Can be `SOCK_STREAM` which is sequenced, reliable, two-way, connection based byte streams (for tcp), or `SOCK_DGRAM` connectionless, unreliable messages of a fixed maximum length (for udp), or others. Can also have an extra flag `SOCK_NONBLOCK`
-  - `param:protocol` normally leave as 0. Normally only a single protocol exists to support a particular socket type within a given protocol family, in which case protocol can be specified as 0.
+- `socket` this system call creates a new socket = (from linux man page) creates an endpoint for communication and returns a file descriptor that refers to that endpoint.  The file descriptor returned by a successful call will be the lowest-numbered file descriptor (in the file descriptor table of the process) not currently open for the process. In our case, we pass the TCP/IP parameters to specify the type of communication this file descriptor will be used for. It takes three arguments.
+
+  - `param:domain` The domain argument specifies a communication domain; this selects the protocol family which will be used for communication. In our case AF_INET IPv4 Internet protocols. It's the address domain of the socket. Recall that there are two possible address domains, the unix domain for two processes which share a common file system, and the Internet domain for any two hosts on the Internet. The symbol constant AF_UNIX is used for the former, and AF_INET for the latter (there are actually many other options which can be used here for specialized purposes).
+  - `param:type` The socket has the indicated type, which specifies the communication semantics. Can be `SOCK_STREAM` which is sequenced, reliable, two-way, connection based byte streams (for tcp), or `SOCK_DGRAM` connectionless, unreliable messages of a fixed maximum length (for udp), or others. Can also have an extra flag `SOCK_NONBLOCK`. It's the type of socket. Recall that there are two choices here, a stream socket in which characters are read in a continuous stream as if from a file or pipe, and a datagram socket, in which messages are read in chunks. The two symbolic constants are SOCK_STREAM and SOCK_DGRAM.
+  - `param:protocol` normally leave as 0. Normally only a single protocol exists to support a particular socket type within a given protocol family, in which case protocol can be specified as 0. If this argument is zero (and it always should be except for unusual circumstances), the operating system will choose the most appropriate protocol. It will choose TCP for stream sockets and UDP for datagram sockets.
+
 ```c
 // sockfd: socket descriptor, an integer (like a file-handle)
 // domain: integer, communication domain e.g.,
