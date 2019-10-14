@@ -23,7 +23,7 @@ help: ##@other Show this help.
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
 server: ##@server
-	gcc -o server.tsk tcp_server.c
+	gcc -o server.tsk server.c
 
 client: ##@client
-	gcc -o client.tsk tcp_client.c
+	gcc -o client.tsk client.c
