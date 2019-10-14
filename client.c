@@ -63,9 +63,8 @@ void func2(int sockfd, char time_buffer[], int i, long long * micros)
     sprintf(buff, "hi there %d", i);
 
     // timenow(time_buffer, 1024);
-    current_timestamp(time_buffer, 1024, micros);
-
     write(sockfd, buff, sizeof(buff));
+    current_timestamp(time_buffer, 1024, micros);
 
     // now we wait for the server's response
     bzero(buff, sizeof(buff));

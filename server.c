@@ -99,13 +99,17 @@ int main(int argc, char const *argv[])
 
             valread = read(new_socket, buffer, 1024);
 
+            current_timestamp(time_buffer, 1024, &micros);
+
             if (valread == 0) { break; }
+
+
 
             strcpy(response, buffer);
             strcat(response, " to you too");
             response[1023] = '\0';
 
-            current_timestamp(time_buffer, 1024, &micros);
+
 
             printf("[%s] micros=%lld Req#%d Client Said: %s \n",
                 time_buffer,
