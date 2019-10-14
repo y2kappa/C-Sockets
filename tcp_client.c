@@ -5,7 +5,8 @@
 #include <sys/socket.h>
 
 #define MAX 1024
-#define PORT 8088
+// #define PORT 8088
+#define PORT 6123
 #define SA struct sockaddr
 
 void func(int sockfd)
@@ -48,6 +49,19 @@ void func(int sockfd)
     }
 }
 
+void func2(int sockfd)
+{
+    char buff[1024] = "hi there!";
+
+    write(sockfd, buff, sizeof(buff));
+
+    // now we wait for the server's response
+    bzero(buff, sizeof(buff));
+    read(sockfd, buff, sizeof(buff));
+    printf("From Server : %s\n", buff);
+
+}
+
 int main()
 {
     int sockfd, connfd;
@@ -68,7 +82,8 @@ int main()
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    // servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    servaddr.sin_addr.s_addr = inet_addr("130.211.119.0");
     servaddr.sin_port = htons(PORT);
 
     // connect the client socket to server socket
@@ -82,7 +97,11 @@ int main()
     }
 
     // function for chat
-    func(sockfd);
+    for (int i=0; i < 100; i++)
+    {
+        func2(sockfd);
+        // func(sockfd);
+    }
 
     // close the socket
     close(sockfd);
